@@ -1,8 +1,10 @@
 const express = require("express");
 const { connection } = require("./config/db");
-const cors = require('cors');
+const cors = require("cors");
 const { userRoute } = require("./routes/user.routes");
 const { authentication } = require("./middlewares/authentication");
+const { adminRoute } = require("./routes/admin.routes");
+const { getJobsListings } = require("./controllers/user.controller");
 const app = express();
 
 app.use(express.json());
@@ -12,14 +14,15 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", userRoute);
+app.get("/jobs",getJobsListings)
 app.use(authentication);
-app.use("/profile",userRoute)
-app.listen(8787, async() => {
-    try {
-        await connection;
-        console.log("connection established");
-      } catch (err) {
-        console.log(err);
-      }
-      console.log("server started on port 8787");
+app.use("/admin", adminRoute);
+app.listen(8787, async () => {
+  try {
+    await connection;
+    console.log("connection established");
+  } catch (err) {
+    console.log(err);
+  }
+  console.log("server started on port 8787");
 });
